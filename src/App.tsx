@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import jsonData from "./assets/data.json";
 import Comment from "./components/Comment";
 import { User } from "./assets/types/User";
@@ -8,30 +8,32 @@ function App() {
   const currentUser: User = jsonData.currentUser;
   const [comments, setComments] = useState<Cmt[]>(jsonData.comments);
 
+  const newCommentInput = useRef<HTMLTextAreaElement>(null);
+
   const handleNewComment = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const commentInput = e.currentTarget.elements.namedItem(
-      "comment"
-    ) as HTMLInputElement;
-
-    const content = commentInput.value;
+    const content = newCommentInput.current?.value;
     const id = comments.length + 1;
-
-    const newComment = new Cmt(id, content, currentUser);
+    const newComment = new Cmt(id, content!, currentUser);
 
     setComments((comments) => [...comments, newComment]);
   };
 
   return (
-    <main>
-      <div>
+    <main className="border container">
+      <div className="border">
         {comments.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))}
       </div>
       <form onSubmit={handleNewComment}>
-        <input name="comment" className="border" type="text" />
+        <textarea
+          ref={newCommentInput}
+          name="comment"
+          className="border"
+          type="text"
+        />
         <input type="submit" value="send" />
       </form>
     </main>
