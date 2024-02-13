@@ -7,7 +7,7 @@ type CommentContextProviderProps = {
 
 type CommentContextProps = {
   comments: Comment[];
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  addNewComment: (newComment: Comment) => void;
 };
 
 export const CommmentContext = createContext<CommentContextProps | null>(null);
@@ -16,9 +16,13 @@ export default function CommentContextProvider({
 }: CommentContextProviderProps) {
   const [comments, setComments] = useState(data.comments);
 
-  const value = { 
+  const addNewComment = (newComment: Comment) => {
+    setComments((prev) => [...prev, newComment]);
+  };
+
+  const value = {
     comments,
-    setComments,
+    addNewComment,
   };
 
   return (
