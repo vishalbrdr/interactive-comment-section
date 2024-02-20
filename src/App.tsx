@@ -22,13 +22,13 @@ function App() {
   };
 
   return (
-    <main className="border container">
+    <main className="border w-fit">
       <div className="border">
         {comments.map((comment) => (
           <Comment key={comment.id} comment={comment} />
         ))}
       </div>
-      <form onSubmit={handleNewComment}>
+      <form className="flex justify-start" onSubmit={handleNewComment}>
         <input ref={newCommentInput} name="comment" className="border" />
         <input type="submit" value="send" />
       </form>

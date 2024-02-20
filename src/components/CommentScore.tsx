@@ -11,14 +11,14 @@ function CommentScore({ cmtId, score }: CommentScoreProps) {
   return (
     <div className="flex rounded-md flex-col border w-8">
       <button
-        className="h-5 grid place-items-center w-full"
+        className="h-7 grid place-items-center w-full"
         onClick={() => updateCommentScore(cmtId, "+")}
       >
         <img src={plusIcon} alt="upvote" />
       </button>
       <div className="text-center">{score}</div>
       <button
-        className="h-5 w-full grid place-items-center"
+        className="h-7 w-full grid place-items-center"
         onClick={() => updateCommentScore(cmtId, "-")}
       >
         <img src={minusIcon} alt="upvote" />
