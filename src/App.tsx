@@ -22,16 +22,18 @@ function App() {
   };
 
   return (
-    <main className="border w-fit">
-      <div className="border">
-        {comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
-        ))}
+    <main className="min-h-screen py-10">
+      <div className="w-fit mx-auto">
+        <div className="w-[40rem] space-y-5 my-5">
+          {comments.map((comment) => (
+            <Comment key={comment.id} comment={comment} />
+          ))}
+        </div>
+        <form className="flex justify-start" onSubmit={handleNewComment}>
+          <input ref={newCommentInput} name="comment" className="" />
+          <input type="submit" value="send" />
+        </form>
       </div>
-      <form className="flex justify-start" onSubmit={handleNewComment}>
-        <input ref={newCommentInput} name="comment" className="border" />
-        <input type="submit" value="send" />
-      </form>
     </main>
   );
 }
