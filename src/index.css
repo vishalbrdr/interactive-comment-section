@@ -4,4 +4,9 @@
 
 body {
   @apply bg-neutral-veryLightGray;
+  font-family: "Rubik", sans-serif;
+}
+
+.btn{
+    @apply py-2 px-5 rounded-lg;
 }

@@ -8,7 +8,7 @@ function App() {
   const currentUser = useUserContext();
   const { comments, addNewComment } = useCommentContext();
 
-  const newCommentInput = useRef<HTMLInputElement>(null);
+  const newCommentInput = useRef<HTMLTextAreaElement>(null);
 
   const handleNewComment = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,9 +29,30 @@ function App() {
             <Comment key={comment.id} comment={comment} />
           ))}
         </div>
-        <form className="flex justify-start" onSubmit={handleNewComment}>
-          <input ref={newCommentInput} name="comment" className="" />
-          <input type="submit" value="send" />
+        <form
+          className="flex p-3 gap-4 items-start bg-neutral-white justify-start"
+          onSubmit={handleNewComment}
+        >
+          <div>
+            <img
+              className="h-8"
+              src={currentUser.image.png}
+              alt="user-display"
+            />
+          </div>
+          <textarea
+            className="resize-none text-neutral-grayishBlue outline-none p-2 border-2 rounded-md grow border-neutral-lightGray hover:border-primary-blue focus:border-primary-blue transition-colors duration-300 ease-in-out w-full"
+            ref={newCommentInput}
+            name="comment"
+            rows={3}
+            placeholder="Add a comment..."
+          />
+          <button
+            type="submit"
+            className="bg-primary-blue hover:bg-primary-grayishBlue focus:bg-primary-grayishBlue text-neutral-white px-4 py-2 uppercase rounded"
+          >
+            send
+          </button>
         </form>
       </div>
     </main>
