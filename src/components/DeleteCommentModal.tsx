@@ -1,17 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useCommentContext } from "../context/CommentContext/useCommentContext";
 
-function DeleteCommentModal() {
-  const dialog = useRef<null | HTMLDialogElement>(null);
+type DeleteCommentModalProps = {
+  dialogRef: React.RefObject<HTMLDialogElement>;
+  cmtId: number[];
+};
 
-  useEffect(() => {
-    if (!dialog.current) return;
-    dialog.current.showModal();
-  });
+function DeleteCommentModal({ dialogRef, cmtId }: DeleteCommentModalProps) {
+  const { deleteComment } = useCommentContext();
+  const closeModal = () => {
+    if (!dialogRef.current) return;
+    dialogRef.current.close();
+  };
+
+  const handleDeleteComment = () => {
+    deleteComment(cmtId);
+    closeModal();
+  };
 
   return (
     <dialog
-      ref={dialog}
-      className="w-[22rem]  text-neutral-darkblue space-y-3 text-left p-8 rounded-lg"
+      ref={dialogRef}
+      className="w-[22rem] backdrop:bg-neutral-darkblue backdrop:opacity-60 cursor-auto text-neutral-darkblue space-y-3 text-left p-8 rounded-lg"
     >
       <h2 className=" text-lg font-medium">Delete Comment</h2>
       <p className="font-normal">
@@ -19,8 +28,13 @@ function DeleteCommentModal() {
         can't be undone
       </p>
       <div className="flex text-neutral-white justify-between">
-        <button className="bg-neutral-grayishBlue btn">No, Cancel</button>
-        <button className="bg-primary-red btn"> Yes, Delete</button>
+        <button className="bg-neutral-grayishBlue btn" onClick={closeModal}>
+          No, Cancel
+        </button>
+        <button onClick={handleDeleteComment} className="bg-primary-red btn">
+          {" "}
+          Yes, Delete
+        </button>
       </div>
     </dialog>
   );

@@ -6,6 +6,7 @@ import CommentScore from "./CommentScore";
 import { User } from "../assets/types/User";
 import { useUserContext } from "../context/UserContext/useUserContext";
 import DeleteCommentModal from "./DeleteCommentModal";
+import { useRef } from "react";
 
 type CommentProps = {
   comment: Cmt;
@@ -20,7 +21,11 @@ export default function Comment({ comment }: CommentProps) {
         </div>
         <section className="grow">
           <div className="space-y-3">
-            <Header user={comment.user} createdAt={comment.createdAt} />
+            <Header
+              user={comment.user}
+              createdAt={comment.createdAt}
+              cmtId={[comment.id]}
+            />
             <p className="whitespace-pre-line text-neutral-grayishBlue">
               {comment.content}
             </p>
@@ -37,7 +42,11 @@ export default function Comment({ comment }: CommentProps) {
               <CommentScore cmtId={reply.id} score={reply.score} />
             </div>
             <div className="mt-2 space-y-3 grow">
-              <Header user={reply.user} createdAt={reply.createdAt} />
+              <Header
+                user={reply.user}
+                createdAt={reply.createdAt}
+                cmtId={[comment.id, reply.id]}
+              />
               <p className="text-neutral-grayishBlue">
                 <span className="text-primary-blue font-bold">
                   @{reply.replyingTo}
@@ -52,19 +61,36 @@ export default function Comment({ comment }: CommentProps) {
   );
 }
 
-function Header({ user, createdAt }: { user: User; createdAt: string }) {
+function Header({
+  user,
+  createdAt,
+  cmtId,
+}: {
+  user: User;
+  createdAt: string;
+  cmtId: number[];
+}) {
   const { username } = useUserContext();
+  const dialog = useRef<null | HTMLDialogElement>(null);
+  const openDeleteModal = () => {
+    if (!dialog.current) return;
+    dialog.current.showModal();
+  };
+
   const renderOptions = () => {
     if (user.username === username) {
       return (
         <div className="flex gap-4 ml-auto">
-          <button className="flex items-baseline ml-auto gap-1">
+          <button
+            onClick={openDeleteModal}
+            className="flex items-baseline ml-auto gap-1"
+          >
             <img src={deleteIcon} alt="deleteIcon" />
             <span className="font-bold hover:text-primary-paleRed text-primary-red">
               Delete
-              <DeleteCommentModal />
             </span>
           </button>
+          <DeleteCommentModal dialogRef={dialog} cmtId={cmtId} />
           <button className="flex items-baseline ml-auto gap-1">
             <img src={editIcon} alt="editIcon" />
             <span className="font-bold text-primary-blue">Edit</span>

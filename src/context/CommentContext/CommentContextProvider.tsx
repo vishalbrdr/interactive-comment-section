@@ -9,7 +9,7 @@ type CommentContextProps = {
   comments: Comment[];
   addNewComment: (newComment: Comment) => void;
   editComment: (cmt: Comment) => void;
-  deleteComment: (cmtId: number) => void;
+  deleteComment: (cmtId: number[]) => void;
   updateCommentScore: (cmtId: number, scoreAction: "+" | "-") => void;
 };
 
@@ -40,9 +40,19 @@ export default function CommentContextProvider({
     setComments(newCommentArr);
   };
 
-  const deleteComment = (id: number) => {
-    const newCommentArr = comments.filter((c) => c.id !== id);
-    setComments(newCommentArr);
+  const deleteComment = (cmtId: number[]) => {
+    if (cmtId.length === 1) {
+      const newCommentArr = comments.filter((c) => c.id !== cmtId[0]);
+      setComments(newCommentArr);
+      return;
+    } else if (cmtId.length === 2) {
+      const newCommentArr = comments.map((c) => {
+        if (c.id !== cmtId[0]) return c;
+        const newReplies = c.replies.filter((r) => r.id !== cmtId[1]);
+        return { ...c, replies: newReplies };
+      });
+      setComments(newCommentArr);
+    }
   };
 
   const value = {
