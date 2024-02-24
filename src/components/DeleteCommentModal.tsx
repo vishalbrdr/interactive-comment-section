@@ -32,7 +32,6 @@ function DeleteCommentModal({ dialogRef, cmtId }: DeleteCommentModalProps) {
           No, Cancel
         </button>
         <button onClick={handleDeleteComment} className="bg-primary-red btn">
-          {" "}
           Yes, Delete
         </button>
       </div>

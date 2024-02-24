@@ -1,6 +1,6 @@
 import React, { createContext, useState } from "react";
 import data from "../../assets/data.json";
-import { Comment } from "../../assets/types/Comment";
+import { Comment, Reply } from "../../assets/types/Comment";
 type CommentContextProviderProps = {
   children: React.ReactNode;
 };
@@ -11,6 +11,7 @@ type CommentContextProps = {
   editComment: (cmt: Comment) => void;
   deleteComment: (cmtId: number[]) => void;
   updateCommentScore: (cmtId: number, scoreAction: "+" | "-") => void;
+  addNewReply: (newReply: Reply, cmtId: number) => void;
 };
 
 export const CommmentContext = createContext<CommentContextProps | null>(null);
@@ -21,6 +22,14 @@ export default function CommentContextProvider({
 
   const addNewComment = (newComment: Comment) => {
     setComments((prev) => [...prev, newComment]);
+  };
+
+  const addNewReply = (newReply: Reply, cmtId: number) => {
+    const newCommentArr = comments.map((c) => {
+      if (c.id !== cmtId) return c;
+      return { ...c, replies: [...c.replies, newReply] };
+    });
+    setComments(newCommentArr);
   };
 
   const editComment = (cmt: Comment) => {
@@ -61,6 +70,7 @@ export default function CommentContextProvider({
     editComment,
     deleteComment,
     updateCommentScore,
+    addNewReply,
   };
 
   return (

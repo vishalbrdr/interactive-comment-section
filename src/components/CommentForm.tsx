@@ -1,17 +1,28 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useEffect, useRef } from "react";
 import { useCommentContext } from "../context/CommentContext/useCommentContext";
 import { useUserContext } from "../context/UserContext/useUserContext";
-import { Comment as Cmt } from "../assets/types/Comment";
+import { Comment as Cmt, Reply } from "../assets/types/Comment";
 
 type CommentFormProps = {
   commentType: "comment" | "reply";
-  replyData?: { replyingTo: string; cmtId: number };
+  comment?: Cmt;
+  replyingTo?: string;
+  setIsReplying?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function CommentForm({ commentType }: CommentFormProps) {
+function CommentForm({
+  commentType,
+  comment,
+  replyingTo,
+  setIsReplying,
+}: CommentFormProps) {
   const input = useRef<HTMLTextAreaElement>(null);
   const currentUser = useUserContext();
-  const { comments, addNewComment } = useCommentContext();
+  const { comments, addNewComment, addNewReply } = useCommentContext();
+
+  useEffect(() => {
+    if (commentType === "reply" && input.current) input.current.focus();
+  });
 
   const handleNewComment = () => {
     const content = input.current?.value;
@@ -21,7 +32,12 @@ function CommentForm({ commentType }: CommentFormProps) {
   };
 
   const handleNewReply = () => {
-
+    if (!comment?.id) return console.error("No reply data");
+    const content = input.current?.value;
+    const id = comment.replies.length;
+    const newReply = new Reply(id, content!, currentUser, replyingTo!);
+    addNewReply(newReply, comment.id);
+    if (setIsReplying) setIsReplying(false);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -35,7 +51,7 @@ function CommentForm({ commentType }: CommentFormProps) {
 
   return (
     <form
-      className="flex p-3 gap-4 items-start bg-neutral-white justify-start"
+      className="flex p-3 rounded-lg gap-4 items-start bg-neutral-white justify-start"
       onSubmit={handleSubmit}
     >
       <div>
@@ -46,7 +62,11 @@ function CommentForm({ commentType }: CommentFormProps) {
         ref={input}
         name="comment"
         rows={3}
-        placeholder="Add a comment..."
+        placeholder={
+          commentType === "reply"
+            ? `reply to @${replyingTo || comment?.user.username}`
+            : "Add a comment..."
+        }
       />
       <button
         type="submit"

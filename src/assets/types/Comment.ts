@@ -18,11 +18,19 @@ export class Comment {
   }
 }
 
-export type Reply = {
+export class Reply {
   id: number;
   content: string;
   createdAt: string;
   score: number;
   replyingTo: string;
   user: User;
-};
+  constructor(id: number, content: string, user: User, replyingTo: string) {
+    this.id = id;
+    this.content = content;
+    this.createdAt = "just now";
+    this.score = 0;
+    this.user = user;
+    this.replyingTo = replyingTo;
+  }
+}
