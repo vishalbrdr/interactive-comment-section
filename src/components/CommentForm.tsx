@@ -35,7 +35,12 @@ function CommentForm({
     if (!comment?.id) return console.error("No reply data");
     const content = input.current?.value;
     const id = comment.replies.length;
-    const newReply = new Reply(id, content!, currentUser, replyingTo!);
+    const newReply = new Reply(
+      id,
+      content!,
+      currentUser,
+      replyingTo || comment.user.username
+    );
     addNewReply(newReply, comment.id);
     if (setIsReplying) setIsReplying(false);
   };
