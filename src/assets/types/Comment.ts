@@ -8,13 +8,13 @@ export class Comment {
   user: User;
   replies: Reply[];
 
-  constructor(id: number, content: string, user: User) {
+  constructor(id: number, content: string, user: User, replies: Reply[] = []) {
     this.id = id;
     this.content = content;
     this.createdAt = "just now";
     this.score = 0;
     this.user = user;
-    this.replies = [];
+    this.replies = replies;
   }
 }
 
@@ -25,11 +25,17 @@ export class Reply {
   score: number;
   replyingTo: string;
   user: User;
-  constructor(id: number, content: string, user: User, replyingTo: string) {
+  constructor(
+    id: number,
+    content: string,
+    user: User,
+    replyingTo: string,
+    score = 0
+  ) {
     this.id = id;
     this.content = content;
     this.createdAt = "just now";
-    this.score = 0;
+    this.score = score;
     this.user = user;
     this.replyingTo = replyingTo;
   }

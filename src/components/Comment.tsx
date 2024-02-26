@@ -8,6 +8,7 @@ import { useUserContext } from "../context/UserContext/useUserContext";
 import DeleteCommentModal from "./DeleteCommentModal";
 import { useRef, useState } from "react";
 import CommentForm from "./CommentForm";
+import { useCommentContext } from "../context/CommentContext/useCommentContext";
 
 type CommentProps = {
   comment: Cmt;
@@ -16,6 +17,21 @@ type CommentProps = {
 export default function Comment({ comment }: CommentProps) {
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { editComment } = useCommentContext();
+  const input = useRef<HTMLTextAreaElement>(null);
+  const handleEditComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.current) return;
+    if (input.current.value.trim() === "") return;
+    const newComment = new Cmt(
+      comment.id,
+      input.current.value,
+      comment.user,
+      comment.replies
+    );
+    editComment(newComment);
+    setIsEditing(false);
+  };
 
   return (
     <div>
@@ -33,7 +49,26 @@ export default function Comment({ comment }: CommentProps) {
               cmtId={[comment.id]}
             />
             {isEditing ? (
-              <>hello</>
+              <form
+                onSubmit={handleEditComment}
+                className="flex flex-col items-end gap-2"
+              >
+                <textarea
+                  className="resize-none text-neutral-grayishBlue outline-none p-2 border-2 rounded-md grow border-neutral-lightGray hover:border-primary-blue focus:border-primary-blue transition-colors duration-300 ease-in-out w-full"
+                  ref={input}
+                  name="comment"
+                  rows={3}
+                  placeholder={"Add a comment..."}
+                >
+                  {comment.content}
+                </textarea>
+                <button
+                  type="submit"
+                  className="bg-primary-blue hover:bg-primary-grayishBlue focus:bg-primary-grayishBlue text-neutral-white px-4 py-2 uppercase rounded"
+                >
+                  update
+                </button>
+              </form>
             ) : (
               <p className="whitespace-pre-line text-neutral-grayishBlue">
                 {comment.content}
@@ -132,6 +167,22 @@ function Header({
 function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const input = useRef<HTMLTextAreaElement>(null);
+  const { editReply } = useCommentContext();
+  const handleEditReply = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.current) return;
+    if (input.current.value.trim() === "") return;
+    const newReply = new Rpy(
+      reply.id,
+      input.current.value,
+      reply.user,
+      reply.replyingTo,
+      reply.score
+    );
+    editReply(newReply, comment.id);
+    setIsEditing(false);
+  };
   return (
     <>
       <div
@@ -150,15 +201,18 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
             setIsEditing={setIsEditing}
           />
           {isEditing ? (
-            <form className="flex flex-col items-end gap-2">
+            <form
+              onSubmit={handleEditReply}
+              className="flex flex-col items-end gap-2"
+            >
               <textarea
                 className="resize-none text-neutral-grayishBlue outline-none p-2 border-2 rounded-md grow border-neutral-lightGray hover:border-primary-blue focus:border-primary-blue transition-colors duration-300 ease-in-out w-full"
-                // ref={input}
+                ref={input}
                 name="comment"
                 rows={4}
                 placeholder={"Add a comment..."}
               >
-                {`@${reply.replyingTo} ${reply.content}`}
+                {reply.content}
               </textarea>
               <button
                 type="submit"
