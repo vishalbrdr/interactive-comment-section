@@ -37,7 +37,7 @@ export default function Comment({ comment }: CommentProps) {
     <div>
       <div className="flex rounded-md bg-neutral-white gap-5 items-start p-5">
         <div>
-          <CommentScore cmtId={comment.id} score={comment.score} />
+          <CommentScore comment={[comment]} />
         </div>
         <section className="grow">
           <div className="space-y-3">
@@ -190,7 +190,7 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
         className="flex rounded-md my-5 p-5 bg-neutral-white ml-9 gap-4"
       >
         <div>
-          <CommentScore cmtId={reply.id} score={reply.score} />
+          <CommentScore comment={[comment, reply]} />
         </div>
         <div className="mt-2 space-y-3 grow">
           <Header

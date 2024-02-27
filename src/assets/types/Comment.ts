@@ -7,6 +7,7 @@ export class Comment {
   score: number;
   user: User;
   replies: Reply[];
+  didUpVoteOrDownVote?: "+" | "-";
 
   constructor(id: number, content: string, user: User, replies: Reply[] = []) {
     this.id = id;
@@ -15,6 +16,7 @@ export class Comment {
     this.score = 0;
     this.user = user;
     this.replies = replies;
+    this.didUpVoteOrDownVote = undefined;
   }
 }
 

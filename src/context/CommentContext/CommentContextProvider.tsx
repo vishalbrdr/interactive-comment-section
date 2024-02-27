@@ -10,7 +10,10 @@ type CommentContextProps = {
   addNewComment: (newComment: Comment) => void;
   editComment: (cmt: Comment) => void;
   deleteComment: (cmtId: number[]) => void;
-  updateCommentScore: (cmtId: number, scoreAction: "+" | "-") => void;
+  updateCommentScore: (
+    comment: [Comment, Reply?],
+    scoreAction: "+" | "-"
+  ) => void;
   addNewReply: (newReply: Reply, cmtId: number) => void;
   editReply: (newReply: Reply, cmtId: number) => void;
 };
@@ -53,11 +56,28 @@ export default function CommentContextProvider({
     setComments(newCommentArr);
   };
 
-  const updateCommentScore = (cmtId: number, scoreAction: "+" | "-") => {
+  const updateCommentScore = (
+    comment: [Comment, Reply?],
+    scoreAction: "+" | "-"
+  ) => {
+    const [cmt, reply] = comment;
     const newCommentArr = comments.map((c) => {
-      if (c.id !== cmtId) return c;
-      if (scoreAction === "-") return { ...c, score: c.score - 1 };
-      return { ...c, score: c.score + 1 };
+      if (reply) {
+        if (c.id !== cmt.id) return c;
+        const newReplies = c.replies.map((r) => {
+          if (r.id !== reply.id) return r;
+          return {
+            ...r,
+            score: scoreAction === "+" ? r.score + 1 : r.score - 1,
+          };
+        });
+        return { ...c, replies: newReplies };
+      }
+      if (c.id !== cmt.id) return c;
+      return {
+        ...c,
+        score: scoreAction === "+" ? c.score + 1 : c.score - 1,
+      };
     });
     setComments(newCommentArr);
   };
@@ -84,7 +104,7 @@ export default function CommentContextProvider({
     deleteComment,
     updateCommentScore,
     addNewReply,
-    editReply,  
+    editReply,
   };
 
   return (
