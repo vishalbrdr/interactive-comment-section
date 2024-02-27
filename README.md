@@ -51,4 +51,4 @@ Users should be able to:
 ## Author
 
 - Frontend Mentor - [@vishalbrdr](https://www.frontendmentor.io/profile/vishalbrdr)
-- LinkedIn - [@vishalbiradar29](https://www.twitter.com/yourusername)
+- LinkedIn - [@vishalbiradar29](https://www.linkedin.com/in/vishalbiradar29/)
