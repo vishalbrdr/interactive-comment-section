@@ -56,14 +56,14 @@ function CommentForm({
 
   return (
     <form
-      className="flex p-3 rounded-lg gap-4 items-start bg-neutral-white justify-start"
+      className="flex max-sm:flex-col p-3 rounded-lg gap-4 items-start bg-neutral-white justify-start"
       onSubmit={handleSubmit}
     >
-      <div>
+      <div className="max-sm:hidden">
         <img className="w-10" src={currentUser.image.png} alt="user-display" />
       </div>
       <textarea
-        className="resize-none text-neutral-grayishBlue outline-none p-2 border-2 rounded-md grow border-neutral-lightGray hover:border-primary-blue focus:border-primary-blue transition-colors duration-300 ease-in-out w-full"
+        className="resize-none  text-neutral-grayishBlue outline-none p-2 border-2 rounded-md grow border-neutral-lightGray hover:border-primary-blue focus:border-primary-blue transition-colors duration-300 ease-in-out w-full"
         ref={input}
         name="comment"
         rows={3}
@@ -75,10 +75,25 @@ function CommentForm({
       />
       <button
         type="submit"
-        className="bg-primary-blue hover:bg-primary-grayishBlue focus:bg-primary-grayishBlue text-neutral-white px-4 py-2 uppercase rounded"
+        className="max-sm:hidden bg-primary-blue hover:bg-primary-grayishBlue focus:bg-primary-grayishBlue text-neutral-white px-4 py-2 uppercase rounded"
       >
         {commentType === "comment" ? "send" : "reply"}
       </button>
+      <div className="sm:hidden flex justify-between w-full">
+        <div>
+          <img
+            className="w-10"
+            src={currentUser.image.png}
+            alt="user-display"
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-primary-blue hover:bg-primary-grayishBlue focus:bg-primary-grayishBlue text-neutral-white px-4 py-2 uppercase rounded"
+        >
+          {commentType === "comment" ? "send" : "reply"}
+        </button>
+      </div>
     </form>
   );
 }
