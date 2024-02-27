@@ -6,7 +6,7 @@ import CommentScore from "./CommentScore";
 import { User } from "../assets/types/User";
 import { useUserContext } from "../context/UserContext/useUserContext";
 import DeleteCommentModal from "./DeleteCommentModal";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CommentForm from "./CommentForm";
 import { useCommentContext } from "../context/CommentContext/useCommentContext";
 
@@ -136,6 +136,9 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const input = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (isEditing && input.current) input.current.focus();
+  }, [isEditing]);
   const { editReply } = useCommentContext();
   const handleEditReply = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -181,6 +184,7 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
                 ref={input}
                 name="comment"
                 rows={4}
+                onBlur={() => setIsEditing(false)}
                 placeholder={"Add a comment..."}
               >
                 {reply.content}

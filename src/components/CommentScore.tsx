@@ -11,7 +11,7 @@ function CommentScore({ comment }: CommentScoreProps) {
   return (
     <div className="flex rounded-md flex-col bg-neutral-veryLightGray w-8">
       <button
-        className="h-7 grid place-items-center w-full"
+        className="h-7 hover:text-primary-blue grid place-items-center w-full"
         onClick={() => updateCommentScore(comment, "+")}
       >
         <img src={plusIcon} alt="upvote" />
