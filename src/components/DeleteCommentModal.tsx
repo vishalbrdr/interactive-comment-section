@@ -28,10 +28,16 @@ function DeleteCommentModal({ dialogRef, cmtId }: DeleteCommentModalProps) {
         can't be undone
       </p>
       <div className="flex text-neutral-white justify-between">
-        <button className="bg-neutral-grayishBlue btn" onClick={closeModal}>
+        <button
+          className="bg-neutral-grayishBlue hover:opacity-50 btn"
+          onClick={closeModal}
+        >
           No, Cancel
         </button>
-        <button onClick={handleDeleteComment} className="bg-primary-red btn">
+        <button
+          onClick={handleDeleteComment}
+          className="bg-primary-red hover:bg-primary-paleRed btn"
+        >
           Yes, Delete
         </button>
       </div>

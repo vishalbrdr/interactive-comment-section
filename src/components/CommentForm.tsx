@@ -79,6 +79,8 @@ function CommentForm({
       >
         {commentType === "comment" ? "send" : "reply"}
       </button>
+
+      {/* mobile view code start*/}
       <div className="sm:hidden flex justify-between w-full">
         <div>
           <img
@@ -94,6 +96,7 @@ function CommentForm({
           {commentType === "comment" ? "send" : "reply"}
         </button>
       </div>
+      {/* mobile view code end*/}
     </form>
   );
 }

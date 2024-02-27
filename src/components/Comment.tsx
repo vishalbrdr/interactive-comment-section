@@ -33,21 +33,23 @@ export default function Comment({ comment }: CommentProps) {
     setIsEditing(false);
   };
 
+  const optionsProps = {
+    setIsReplying,
+    setIsEditing,
+    user: comment.user,
+    createdAt: comment.createdAt,
+    cmtId: [comment.id],
+  };
+
   return (
     <div>
       <div className="flex rounded-md bg-neutral-white gap-5 items-start p-5">
-        <div>
+        <div className="max-sm:hidden">
           <CommentScore comment={[comment]} />
         </div>
         <section className="grow">
           <div className="space-y-3">
-            <Header
-              setIsReplying={setIsReplying}
-              setIsEditing={setIsEditing}
-              user={comment.user}
-              createdAt={comment.createdAt}
-              cmtId={[comment.id]}
-            />
+            <Header optionsProps={optionsProps} />
             {isEditing ? (
               <form
                 onSubmit={handleEditComment}
@@ -70,9 +72,14 @@ export default function Comment({ comment }: CommentProps) {
                 </button>
               </form>
             ) : (
-              <p className="whitespace-pre-line text-neutral-grayishBlue">
-                {comment.content}
-              </p>
+              <>
+                <p className="whitespace-pre-line text-neutral-grayishBlue">
+                  {comment.content}
+                </p>
+                <div className="flex sm:hidden gap-4 w-fit mt-4 ml-auto">
+                  <CommentOptions optionsProps={optionsProps} />
+                </div>
+              </>
             )}
           </div>
         </section>
@@ -86,7 +93,7 @@ export default function Comment({ comment }: CommentProps) {
           />
         </div>
       )}
-      <div className="border-l-[3px] ml-9 space-y-5 border-neutral-lightGray">
+      <div className="border-l-[3px] sm:ml-9 space-y-5 border-neutral-lightGray">
         {comment.replies.map((reply) => (
           <Reply reply={reply} key={reply.id} comment={comment} />
         ))}
@@ -96,59 +103,18 @@ export default function Comment({ comment }: CommentProps) {
 }
 
 function Header({
-  user,
-  createdAt,
-  cmtId,
-  setIsReplying,
-  setIsEditing,
+  optionsProps,
 }: {
-  user: User;
-  createdAt: string;
-  cmtId: number[];
-  setIsReplying: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  optionsProps: {
+    user: User;
+    createdAt: string;
+    cmtId: number[];
+    setIsReplying: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  };
 }) {
   const { username } = useUserContext();
-  const dialog = useRef<null | HTMLDialogElement>(null);
-  const openDeleteModal = () => {
-    if (!dialog.current) return;
-    dialog.current.showModal();
-  };
-
-  const renderOptions = () => {
-    if (user.username === username) {
-      return (
-        <div className="flex gap-4 ml-auto">
-          <button
-            onClick={openDeleteModal}
-            className="flex items-baseline ml-auto gap-1"
-          >
-            <img src={deleteIcon} alt="deleteIcon" />
-            <span className="font-bold hover:text-primary-paleRed text-primary-red">
-              Delete
-            </span>
-          </button>
-          <DeleteCommentModal dialogRef={dialog} cmtId={cmtId} />
-          <button
-            onClick={() => setIsEditing(true)}
-            className="flex items-baseline ml-auto gap-1"
-          >
-            <img src={editIcon} alt="editIcon" />
-            <span className="font-bold text-primary-blue">Edit</span>
-          </button>
-        </div>
-      );
-    }
-    return (
-      <button
-        onClick={() => setIsReplying(true)}
-        className="flex items-baseline ml-auto gap-1"
-      >
-        <img src={replyIcon} alt="replyicon" />
-        <span className="font-bold text-primary-blue">Reply</span>
-      </button>
-    );
-  };
+  const { user, createdAt } = optionsProps;
   return (
     <header className="flex w-full items-center gap-3">
       <img className="w-8 h-8" src={user.image.png} alt="user" />
@@ -159,7 +125,9 @@ function Header({
         </div>
       )}
       <span className="text-neutral-grayishBlue">{createdAt}</span>
-      {renderOptions()}
+      <span className="ml-auto flex gap-4 max-sm:hidden">
+        <CommentOptions optionsProps={optionsProps} />
+      </span>
     </header>
   );
 }
@@ -183,23 +151,26 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
     editReply(newReply, comment.id);
     setIsEditing(false);
   };
+
+  const optionsProps = {
+    setIsReplying,
+    setIsEditing,
+    user: reply.user,
+    createdAt: reply.createdAt,
+    cmtId: [comment.id, reply.id],
+  };
+
   return (
     <>
       <div
         key={reply.id}
-        className="flex rounded-md my-5 p-5 bg-neutral-white ml-9 gap-4"
+        className="flex rounded-md my-5 p-5 bg-neutral-white sm:ml-9 ml-4 gap-4"
       >
-        <div>
+        <div className="max-sm:hidden">
           <CommentScore comment={[comment, reply]} />
         </div>
         <div className="mt-2 space-y-3 grow">
-          <Header
-            user={reply.user}
-            createdAt={reply.createdAt}
-            cmtId={[comment.id, reply.id]}
-            setIsReplying={setIsReplying}
-            setIsEditing={setIsEditing}
-          />
+          <Header optionsProps={optionsProps} />
           {isEditing ? (
             <form
               onSubmit={handleEditReply}
@@ -222,17 +193,24 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
               </button>
             </form>
           ) : (
-            <p className="text-neutral-grayishBlue">
-              <span className="text-primary-blue font-bold">
-                @{reply.replyingTo}
-              </span>{" "}
-              {reply.content}
-            </p>
+            <>
+              <p className="text-neutral-grayishBlue">
+                <span className="text-primary-blue font-bold">
+                  @{reply.replyingTo}
+                </span>{" "}
+                {reply.content}
+              </p>
+              {/* mobile-view only */}
+              <div className="sm:hidden flex gap-4 w-fit mt-4 ml-auto">
+                <CommentOptions optionsProps={optionsProps} />
+              </div>
+              {/* mobile view only */}
+            </>
           )}
         </div>
       </div>
       {isReplying && (
-        <div className="mt-2 pl-10">
+        <div className="mt-2 sm:pl-5 ml-4">
           <CommentForm
             commentType="reply"
             comment={comment}
@@ -242,5 +220,56 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
         </div>
       )}
     </>
+  );
+}
+
+type OptionProps = {
+  optionsProps: {
+    setIsReplying: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+    user: User;
+    createdAt: string;
+    cmtId: number[];
+  };
+};
+
+function CommentOptions({ optionsProps }: OptionProps) {
+  const { user, cmtId, setIsEditing, setIsReplying } = optionsProps;
+  const { username } = useUserContext();
+  const dialog = useRef<null | HTMLDialogElement>(null);
+  const openDeleteModal = () => {
+    if (!dialog.current) return;
+    dialog.current.showModal();
+  };
+
+  if (user.username === username) {
+    return (
+      <>
+        <button
+          onClick={openDeleteModal}
+          className="flex hover:opacity-60 items-baseline gap-1"
+        >
+          <img src={deleteIcon} alt="deleteIcon" />
+          <span className="font-bold text-primary-red">Delete</span>
+        </button>
+        <DeleteCommentModal dialogRef={dialog} cmtId={cmtId} />
+        <button
+          onClick={() => setIsEditing(true)}
+          className="flex hover:opacity-60 items-baseline gap-1"
+        >
+          <img src={editIcon} alt="editIcon" />
+          <span className="font-bold text-primary-blue">Edit</span>
+        </button>
+      </>
+    );
+  }
+  return (
+    <button
+      onClick={() => setIsReplying(true)}
+      className="flex items-baseline gap-1 hover:opacity-60"
+    >
+      <img src={replyIcon} alt="replyicon" />
+      <span className="font-bold text-primary-blue">Reply</span>
+    </button>
   );
 }
