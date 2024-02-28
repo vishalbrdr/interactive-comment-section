@@ -67,9 +67,6 @@ function CommentForm({
         ref={input}
         name="comment"
         rows={3}
-        onBlur={() => {
-          if (setIsReplying) setIsReplying(false);
-        }}
         placeholder={
           commentType === "reply"
             ? `reply to @${replyingTo || comment?.user.username}`

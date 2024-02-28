@@ -76,9 +76,14 @@ export default function Comment({ comment }: CommentProps) {
                 <p className="whitespace-pre-line text-neutral-grayishBlue">
                   {comment.content}
                 </p>
-                <div className="flex sm:hidden gap-4 w-fit mt-4 ml-auto">
-                  <CommentOptions optionsProps={optionsProps} />
+                {/* mobile view only */}
+                <div className="flex justify-between sm:hidden items-center gap-4 mt-4">
+                  <CommentScore comment={[comment]} />
+                  <div className="flex gap-4">
+                    <CommentOptions optionsProps={optionsProps} />
+                  </div>
                 </div>
+                {/* mobile view only */}
               </>
             )}
           </div>
@@ -184,7 +189,6 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
                 ref={input}
                 name="comment"
                 rows={4}
-                onBlur={() => setIsEditing(false)}
                 placeholder={"Add a comment..."}
               >
                 {reply.content}
@@ -205,8 +209,11 @@ function Reply({ reply, comment }: { reply: Rpy; comment: Cmt }) {
                 {reply.content}
               </p>
               {/* mobile-view only */}
-              <div className="sm:hidden flex gap-4 w-fit mt-4 ml-auto">
-                <CommentOptions optionsProps={optionsProps} />
+              <div className="sm:hidden flex mt-4 justify-between items-center">
+                <CommentScore comment={[comment, reply]} />
+                <div className="flex gap-4">
+                  <CommentOptions optionsProps={optionsProps} />
+                </div>
               </div>
               {/* mobile view only */}
             </>
